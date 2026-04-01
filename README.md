@@ -1,6 +1,6 @@
 # Chatbot Performance Analytics Dashboard
 
-#📊 Project Overview
+📊 Project Overview
 This project transforms raw, messy chatbot interaction logs into a high-level Business Intelligence dashboard. The goal was to analyze the performance, user satisfaction, and system efficiency across different corporate departments.
 
 🛠️ The Data Engineering Challenge
