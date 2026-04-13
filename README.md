@@ -32,5 +32,9 @@ The final dashboard provides deep-dives into:
 
 ## 📸 PowerBI Dashboard
 
-<img width="616" height="344" alt="image" src="https://github.com/user-attachments/assets/d3542992-4c38-480a-a553-c3c66b6d09e5" />
+<img width="1289" height="726" alt="image" src="https://github.com/user-attachments/assets/58722752-5ffe-4647-b962-5dc02207e014" />
+
+<img width="1290" height="718" alt="image" src="https://github.com/user-attachments/assets/eeec4c67-c860-4827-a0fd-f7474d29ceb2" />
+
+
 
