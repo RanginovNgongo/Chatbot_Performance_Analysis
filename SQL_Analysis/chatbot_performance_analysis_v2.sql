@@ -1,5 +1,6 @@
 -- RANGINOV NGONGO
 -- Business Intelligence Chatbot Performance Analytics SQL
+
 /* ===============================================================================
 1. SCHEMA SETUP 
 ===============================================================================
@@ -7,9 +8,11 @@
 USE AI_Chatbot_Data_Analyst_Project;
 GO
 
-ALTER TABLE BI_Chatbot_Interactions ADD Interaction_DateTime DATETIME;
-ALTER TABLE BI_Chatbot_Interactions ADD Feedback_Category NVARCHAR(50);
-ALTER TABLE BI_Chatbot_Interactions ADD Speed_Performance NVARCHAR(50);
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('BI_Chatbot_Interactions') AND name = 'Feedback_Category')
+    ALTER TABLE BI_Chatbot_Interactions ADD Feedback_Category NVARCHAR(50);
+
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('BI_Chatbot_Interactions') AND name = 'Speed_Performance')
+    ALTER TABLE BI_Chatbot_Interactions ADD Speed_Performance NVARCHAR(50);
 GO
 
 /* ===============================================================================
@@ -17,11 +20,7 @@ GO
 ===============================================================================
 */
 
--- Fixes the 'Min:Sec.ms' string and rounds .9 up to the next second
-UPDATE BI_Chatbot_Interactions
-SET Interaction_DateTime = DATEADD(ms, 0, ROUND(TRY_CONVERT(DATETIME, '2024-01-01 00:' + timestamp, 121), 0));
-
--- Round confidence to 1 decimal place (e.g., 0.73 -> 0.7)
+-- Round confidence to 1 decimal place
 UPDATE BI_Chatbot_Interactions 
 SET bot_response_confidence = ROUND(bot_response_confidence, 1);
 
@@ -60,18 +59,16 @@ GO
 
 /* ===============================================================================
 4. THE CLEAN ANALYTICS VIEW
-This is the final layer for the dashboard.
 ===============================================================================
 */
 
-CREATE VIEW v_Chatbot_Performance_Dashboard AS
+CREATE OR ALTER VIEW v_Chatbot_Performance_Dashboard AS
 SELECT 
     interaction_id,
     
-    -- Split Date and Time (Clean HH:MM:SS)
-    CAST(Interaction_DateTime AS DATE) AS Interaction_Date,
-    CONVERT(VARCHAR(8), Interaction_DateTime, 108) AS [Interaction_Time],
+    [timestamp] AS Interaction_Timestamp,
     
+    -- Department and Role Formatting
     REPLACE(UPPER(LEFT(department,1)) + LOWER(SUBSTRING(department, 2, LEN(department))), 'Hr', 'HR') AS Department,
     REPLACE(UPPER(LEFT(user_role,1)) + LOWER(SUBSTRING(user_role, 2, LEN(user_role))), 'Hr', 'HR') AS User_Role,
     
@@ -95,5 +92,4 @@ FROM dbo.BI_Chatbot_Interactions;
 GO
 
 -- Double check the results
-SELECT * FROM v_Chatbot_Performance_Dashboard
-ORDER BY Interaction_Date, [Interaction_Time];
+SELECT * FROM v_Chatbot_Performance_Dashboard;
